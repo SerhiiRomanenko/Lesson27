@@ -91,17 +91,9 @@ myContacts.delNote('Anya');
 ///////////************** FUNCTIONS
 
 function showTodoList() {
-    let i = 1;
-    const $ul = document.createElement('ul');
-
-    $ul.classList.add('todo__list');
-    myToDo.notes.forEach(item => {
-        const $li = document.createElement('li');
-        $li.classList.add(i++);
-        $li.innerHTML = item.title + ' - ' + item.text;
-        $ul.append($li);
-    });
-    $todoInfo.after($ul);
+    const $li = document.createElement('li');
+    $li.innerHTML = $todoTitle.value;
+    $todoInfo.append($li);
 }
 
 function addTodoTask() {

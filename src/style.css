@@ -2,7 +2,13 @@ body {
   background-color: #be90d4;
   text-align: center;
   color: white;
-  font-family: 'Quicksand', sans-serif; }
+  font-family: 'Quicksand', sans-serif;
+}
+
+li {
+  border: 1px solid saddlebrown;
+  margin-bottom: 10px;
+}
 
 button {
   background-color: #68c3a3;
@@ -11,18 +17,26 @@ button {
   padding: 7px;
   font-weight: 300;
   -webkit-transition: 0.5s;
-  transition: 0.5s; }
-  button:hover {
-    background-color: #47b18c;
-    cursor: pointer;
-    color: #f5f246; }
+  transition: 0.5s;
+}
+
+button:hover {
+  background-color: #47b18c;
+  cursor: pointer;
+  color: #f5f246;
+}
 
 .title {
-  background-color: #68c3a3; }
+  background-color: #68c3a3;
+}
 
 .todo {
   max-width: 600px;
-  margin: 0 auto; }
-  .todo__form {
-    background-color: #be820a;
-    padding: 10px; }
+  margin: 0 auto;
+}
+
+.todo__form {
+  background-color: #be820a;
+  padding: 10px;
+}
+/*# sourceMappingURL=style.css.map */
