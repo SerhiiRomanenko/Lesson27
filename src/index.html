@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>toDo based on Classes</title>
+        <link rel="stylesheet" href="style.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+    <body>
+        <h1 class="title">toDo List:</h1>
+
+        <div class="todo">
+            <form class="todo__form">
+                <input class="todo__title" type="text" placeholder="toDO title" required />
+                <input class="todo__text" type="text" placeholder="toDO text" required />
+                <button class="todo__addTask">Добавить</button>
+            </form>
+            <div class="todo__statistic">
+                <h3>Total tasks: <span class="todo__total">0</span></h3>
+                <h3 class="todo__info">Completed tasks: <span class="todo__completed">0</span></h3>
+            </div>
+            <!-- <button class="todo__showAllTasks">Показать/скрыть задачи</button> -->
+        </div>
+        <script src="index.js"></script>
+    </body>
+</html>

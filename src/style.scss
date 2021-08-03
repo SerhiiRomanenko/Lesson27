@@ -1,0 +1,40 @@
+body {
+    background-color: #be90d4;
+    text-align: center;
+    color: white;
+    font-family: 'Quicksand', sans-serif;
+}
+
+li {
+    list-style: none;
+    background-color: darkgrey;
+}
+
+button {
+    background-color: #68c3a3;
+    border: 0;
+    color: white;
+    padding: 7px;
+    font-weight: 300;
+    transition: 0.5s;
+
+    &:hover {
+        background-color: darken(#68c3a3, $amount: 10);
+        cursor: pointer;
+        color: rgb(245, 242, 70);
+    }
+}
+
+.title {
+    background-color: #68c3a3;
+}
+
+.todo {
+    max-width: 600px;
+    margin: 0 auto;
+
+    &__form {
+        background-color: #be820a;
+        padding: 10px;
+    }
+}
