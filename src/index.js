@@ -90,7 +90,7 @@ class RenderToDoList {
 
         this.initializeFormSubmit();
         this.initializeRemovingNotice();
-        this.initializeEditingNotice();
+        this.initializeShowStatistic();
     }
 
     initializeFormSubmit() {
@@ -104,6 +104,7 @@ class RenderToDoList {
                 this.initializeShowingList();
             }
             $input.value = '';
+            this.initializeShowStatistic();
         });
     }
 
@@ -111,6 +112,7 @@ class RenderToDoList {
         const fragment = new DocumentFragment();
 
         this.model.repository.forEach(item => {
+            console.dir(this.list.childNodes);
             const $li = document.createElement('li');
             $li.dataset.id = item.id;
             let checkedOrNot;
@@ -119,7 +121,8 @@ class RenderToDoList {
                 checkedOrNot = 'checked';
             }
 
-            $li.innerHTML = `<span title='Click to edit'>${item.text}</span>
+            $li.innerHTML = `<span title='Click to edit'>
+            ${item.text}</span>
             <input type="checkbox" ${checkedOrNot}>
             <button>Remove notice</button>`;
             fragment.appendChild($li);
@@ -131,31 +134,40 @@ class RenderToDoList {
     initializeRemovingNotice() {
         this.list.addEventListener('click', ({ target }) => {
             const li = target.closest('li');
+            console.dir(target);
 
             switch (target.tagName) {
                 case 'BUTTON':
                     this.model.del(+li.getAttribute('data-id'));
+                    this.initializeShowStatistic();
                     this.initializeShowingList();
                     break;
 
                 case 'INPUT':
                     this.model.setAsDoneNotice(+li.getAttribute('data-id'));
+                    this.initializeShowStatistic();
                     this.initializeShowingList();
                     break;
+
+                case 'SPAN':
+                    const $input = document.querySelector('.todo__text');
+                    const span = target.closest('span');
+                    $input.value = '';
+                    $input.value = span.innerText.trim();
+                    this.model.del(+li.getAttribute('data-id'));
             }
         });
     }
+    initializeShowStatistic() {
+        const $statBox = document.querySelector('.todo__statistic');
+        const $div = document.createElement('div');
+        $statBox.innerHTML = '';
+        const fragment = document.createDocumentFragment();
 
-    initializeEditingNotice() {
-        this.list.addEventListener('click', ({ target }) => {
-            const span = target.closest('span');
-            const li = target.closest('li');
-            const $input = document.querySelector('.todo__text');
-
-            $input.value = '';
-            $input.value = span.innerText.trim();
-            this.model.del(+li.getAttribute('data-id'));
-        });
+        $div.innerHTML = `<h2>Total: ${this.model.getStatistic().totalNotice}</h2>
+        <h2>Complited: ${this.model.getStatistic().doneNotice}</h2>`;
+        fragment.appendChild($div);
+        $statBox.appendChild(fragment);
     }
 }
 

@@ -4,6 +4,12 @@ body {
   color: white;
   font-family: 'Quicksand', sans-serif; }
 
+div {
+  color: #4caf50; }
+
+h2 {
+  margin: 0; }
+
 ul {
   color: black;
   list-style: none; }
