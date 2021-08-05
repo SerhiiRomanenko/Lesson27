@@ -1,20 +1,25 @@
 body {
-    background-color: #be90d4;
+    background-color: white;
     text-align: center;
     color: white;
     font-family: 'Quicksand', sans-serif;
 }
 
+ul {
+    color: black;
+    list-style: none;
+}
 li {
-    border: 1px solid saddlebrown;
+    width: 454px;
     margin-bottom: 10px;
+    text-align: right;
 }
 
 button {
     background-color: #68c3a3;
-    border: 0;
+    border: 1px solid rgb(33, 126, 74);
     color: white;
-    padding: 7px;
+    padding: 3px;
     font-weight: 300;
     transition: 0.5s;
 
@@ -22,6 +27,8 @@ button {
         background-color: darken(#68c3a3, $amount: 10);
         cursor: pointer;
         color: rgb(245, 242, 70);
+        background-color: #4caf50; /* Green */
+        color: white;
     }
 }
 

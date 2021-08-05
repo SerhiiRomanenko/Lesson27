@@ -1,118 +1,163 @@
-// 'use strict';
-
-///////////************ SELECTORS
-
-const todoTotal = document.querySelector('.todo__total');
-const complitedTasks = document.querySelector('.todo__completed');
-const $todoButton = document.querySelector('.todo__addTask');
-const $todoInfo = document.querySelector('.todo__info');
-const $todoTitle = document.querySelector('.todo__title');
-const $todoText = document.querySelector('.todo__text');
-
-//////////************* CLASSES
+'use strict';
 
 class List {
-    notes = new Array();
+    repository = new Array();
 
-    addNote(obj) {
-        this.notes.push(obj);
+    add(object) {
+        const id = Date.now();
+        const item = {
+            id,
+            ...object,
+        };
+
+        this.repository.push(item);
     }
 
-    delNote(value) {
-        this.notes = this.notes.filter(note => note.title !== value);
+    del(id) {
+        this.repository = this.repository.filter(item => item.id !== id);
+    }
+
+    edit(id, payload) {
+        this.repository = this.repository.map(item => {
+            if (item.id === id) {
+                return {
+                    ...item,
+                    ...payload,
+                };
+            } else {
+                return item;
+            }
+        });
     }
 }
 
 class TodoList extends List {
-    addNote(title, text, status = false) {
-        const isNotUnique = this.isNotUnique({ title, text });
-
-        if (isNotUnique) {
-            throw new Error('This value exists');
+    addNotice(text) {
+        if (!this.#isUnique(text)) {
+            super.add({ text, isDone: false });
+        } else {
+            throw new Error('The value is not Unique');
         }
-        const obj = {
-            title,
-            text,
-            status,
-        };
-        super.addNote(obj);
-    }
-    delNote() {
-        super.addNote();
     }
 
-    isNotUnique({ title, text }) {
-        const note = this.notes.find(note => {
-            if (title === note.title || text === note.text) {
-                return true;
+    editNotice(id, text) {
+        if (!this.#isUnique(text)) {
+            super.edit(id, { text });
+        } else {
+            throw new Error('The value is not Unique');
+        }
+    }
+
+    setAsDoneNotice(id) {
+        this.repository = this.repository.map(item => {
+            if (item.id === id) {
+                return {
+                    ...item,
+                    isDone: true,
+                };
+            } else {
+                return item;
             }
         });
-        return !!note;
     }
 
     getStatistic() {
-        const result = {
-            allTasks: 0,
-            completedTasks: 0,
-        };
+        const doneNotice = this.repository.filter(item => item.isDone === true);
 
-        this.notes.forEach(note => {
-            if (note.status === false) {
-                result.completedTasks++;
-                result.allTasks++;
-            } else {
-                result.allTasks++;
-            }
-        });
-        return result;
+        return {
+            totalNotice: this.repository.length,
+            doneNotice: doneNotice.length,
+        };
+    }
+
+    #isUnique(text) {
+        return Boolean(this.repository.find(item => item.text === text));
     }
 }
 
 class ContactList extends List {
-    addNote(name, surname, number) {
-        const obj = {
-            name,
-            surname,
-            number,
-        };
-        super.addNote(obj);
+    searchContact(value) {
+        return this.repository.filter(item => Object.values(item).includes(value));
     }
 }
 
-const myToDo = new TodoList();
-// console.log(myToDo);
+class RenderToDoList {
+    form = document.querySelector('.todo-form');
+    list = document.querySelector('.todo__list');
 
-const myContacts = new ContactList();
-myContacts.addNote('Serhii', 'Romanenko', 38096112342);
-myContacts.addNote('Anya', 'Zhavoronkova', 380506754333);
-myContacts.delNote('Anya');
-// console.log(myContacts);
+    constructor() {
+        this.model = new TodoList();
 
-///////////************** FUNCTIONS
+        this.initializeFormSubmit();
+        this.initializeRemovingNotice();
+        this.initializeEditingNotice();
+    }
 
-function showTodoList() {
-    const $li = document.createElement('li');
-    $li.innerHTML = $todoTitle.value;
-    $todoInfo.append($li);
-}
+    initializeFormSubmit() {
+        this.form.addEventListener('submit', event => {
+            event.preventDefault();
 
-function addTodoTask() {
-    if ($todoTitle.value.trim() !== '' && $todoText.value.trim() !== '') {
-        myToDo.addNote($todoTitle.value, $todoText.value);
-        $todoTitle.value = '';
-        $todoText.value = '';
-        todoTotal.innerHTML = myToDo.getStatistic().allTasks;
-        complitedTasks.innerHTML = myToDo.getStatistic().completedTasks;
-        showTodoList();
-    } else {
-        console.log('You need to put some text');
+            const $input = document.querySelector('.todo__text');
+
+            if ($input.value.trim()) {
+                this.model.addNotice($input.value);
+                this.initializeShowingList();
+            }
+            $input.value = '';
+        });
+    }
+
+    initializeShowingList() {
+        const fragment = new DocumentFragment();
+
+        this.model.repository.forEach(item => {
+            const $li = document.createElement('li');
+            $li.dataset.id = item.id;
+            let checkedOrNot;
+
+            if (item.isDone === true) {
+                checkedOrNot = 'checked';
+            }
+
+            $li.innerHTML = `<span title='Click to edit'>${item.text}</span>
+            <input type="checkbox" ${checkedOrNot}>
+            <button>Remove notice</button>`;
+            fragment.appendChild($li);
+        });
+        this.list.innerHTML = '';
+        this.list.appendChild(fragment);
+    }
+
+    initializeRemovingNotice() {
+        this.list.addEventListener('click', ({ target }) => {
+            const li = target.closest('li');
+
+            switch (target.tagName) {
+                case 'BUTTON':
+                    this.model.del(+li.getAttribute('data-id'));
+                    this.initializeShowingList();
+                    break;
+
+                case 'INPUT':
+                    this.model.setAsDoneNotice(+li.getAttribute('data-id'));
+                    this.initializeShowingList();
+                    break;
+            }
+        });
+    }
+
+    initializeEditingNotice() {
+        this.list.addEventListener('click', ({ target }) => {
+            const span = target.closest('span');
+            const li = target.closest('li');
+            const $input = document.querySelector('.todo__text');
+
+            $input.value = '';
+            $input.value = span.innerText.trim();
+            this.model.del(+li.getAttribute('data-id'));
+        });
     }
 }
 
-///////////************* EVENT LISTENERS
-
-$todoButton.addEventListener('click', function (event) {
-    event.preventDefault();
-    addTodoTask();
-    console.log(myToDo);
-});
+new RenderToDoList();
+new ContactList();
