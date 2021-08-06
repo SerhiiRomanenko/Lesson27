@@ -14,14 +14,31 @@
         />
     </head>
     <body>
+        <!-----------------TODO ------------->
         <h1 class="title">toDo List:</h1>
-
         <form class="todo-form">
             <input class="todo__text" type="text" name="text" placeholder="Enter notice" required />
             <button class="todo__addTask">Добавить</button>
         </form>
         <ul class="todo__list"></ul>
         <div class="todo__statistic"></div>
+
+        <!------------------CONTACT----------->
+        <h1 class="title">Contact Book:</h1>
+        <form class="contact-form">
+            <input class="contact__name" type="text" name="name" placeholder="Enter name" required />
+            <input class="contact__surname" type="text" name="surname" placeholder="Enter surname" required />
+            <input class="contact__number" type="number" name="number" placeholder="Enter number" required />
+            <button class="contact__add">Добавить</button>
+        </form>
+
+        <form class="contact__search">
+            <input class="contact__input" type="text" name="input" />
+            <button class="contact__search-btn">Найти</button>
+        </form>
+        <button class="contact__show-all">Показать все</button>
+
+        <ul class="contact__list"></ul>
 
         <script src="index.js"></script>
     </body>

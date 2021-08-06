@@ -112,7 +112,6 @@ class RenderToDoList {
         const fragment = new DocumentFragment();
 
         this.model.repository.forEach(item => {
-            console.dir(this.list.childNodes);
             const $li = document.createElement('li');
             $li.dataset.id = item.id;
             let checkedOrNot;
@@ -134,7 +133,6 @@ class RenderToDoList {
     initializeRemovingNotice() {
         this.list.addEventListener('click', ({ target }) => {
             const li = target.closest('li');
-            console.dir(target);
 
             switch (target.tagName) {
                 case 'BUTTON':
@@ -171,5 +169,111 @@ class RenderToDoList {
     }
 }
 
+class renderContactBook {
+    form = document.querySelector('.contact-form');
+    list = document.querySelector('.contact__list');
+    searchForm = document.querySelector('.contact__search');
+
+    constructor() {
+        this.model = new ContactList();
+
+        this.initializeFormSubmit();
+        this.initializeShowingList();
+        this.initializeRemovingNotice();
+        this.initializeSearchSubmit();
+    }
+
+    initializeFormSubmit() {
+        this.form.addEventListener('submit', event => {
+            event.preventDefault();
+
+            const $nameInput = document.querySelector('.contact__name');
+            const $surnameInput = document.querySelector('.contact__surname');
+            const $number = document.querySelector('.contact__number');
+
+            if ($nameInput.value.trim() && $surnameInput.value.trim() && $number.value.trim()) {
+                this.model.add({ name: $nameInput.value, surname: $surnameInput.value, number: $number.value });
+                this.initializeShowingList();
+            }
+            $nameInput.value = '';
+            $surnameInput.value = '';
+            $number.value = '';
+        });
+    }
+
+    initializeShowingList() {
+        const fragment = new DocumentFragment();
+
+        this.model.repository.forEach(item => {
+            const $li = document.createElement('li');
+            $li.dataset.id = item.id;
+
+            $li.innerHTML = `<span title='Click to edit'>
+            ${item.name} ${item.surname} ${item.number}</span>
+            <button>Remove notice</button>`;
+            fragment.appendChild($li);
+        });
+        this.list.innerHTML = '';
+        this.list.appendChild(fragment);
+    }
+
+    initializeRemovingNotice() {
+        this.list.addEventListener('click', ({ target }) => {
+            const li = target.closest('li');
+
+            switch (target.tagName) {
+                case 'BUTTON':
+                    this.model.del(+li.getAttribute('data-id'));
+                    this.initializeShowingList();
+                    break;
+
+                case 'SPAN':
+                    const $nameInput = document.querySelector('.contact__name');
+                    const $surnameInput = document.querySelector('.contact__surname');
+                    const $numberInput = document.querySelector('.contact__number');
+                    const span = target.closest('span');
+                    const contactInfo = span.innerHTML.trim().split(' ');
+
+                    $nameInput.value = contactInfo[0];
+                    $surnameInput.value = contactInfo[1];
+                    $numberInput.value = contactInfo[2];
+
+                    this.model.del(+li.getAttribute('data-id'));
+            }
+        });
+    }
+    initializeSearchSubmit() {
+        const $showAll = document.querySelector('.contact__show-all');
+        this.searchForm.addEventListener('submit', e => {
+            e.preventDefault();
+
+            const $searchInput = document.querySelector('.contact__input');
+            if ($searchInput.value.trim()) {
+                const filtredContacts = this.model.searchContact($searchInput.value);
+                console.log(filtredContacts);
+
+                const fragment = new DocumentFragment();
+                filtredContacts.forEach(item => {
+                    const $li = document.createElement('li');
+                    $li.dataset.id = item.id;
+
+                    $li.innerHTML = `<span title='Click to edit'>
+            ${item.name} ${item.surname} ${item.number}</span>
+            <button>Remove notice</button>`;
+                    fragment.appendChild($li);
+                });
+                this.list.innerHTML = '';
+                this.list.appendChild(fragment);
+            }
+            $searchInput.value = '';
+        });
+        $showAll.addEventListener('click', e => {
+            e.preventDefault();
+
+            this.initializeShowingList();
+        });
+    }
+}
+
 new RenderToDoList();
-new ContactList();
+new renderContactBook();

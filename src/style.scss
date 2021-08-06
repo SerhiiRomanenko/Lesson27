@@ -17,7 +17,7 @@ ul {
     list-style: none;
 }
 li {
-    width: 200px;
+    width: 300px;
     margin: 0 auto;
     margin-bottom: 10px;
     text-align: right;
@@ -38,6 +38,11 @@ button {
         background-color: #4caf50; /* Green */
         color: white;
     }
+}
+
+.contact__search {
+    margin-top: 20px;
+    display: inline-block;
 }
 
 .title {
