@@ -77,12 +77,13 @@ class TodoList extends List {
 
 class ContactList extends List {
     searchContact(value) {
-        let result = new Array();
+        const result = new Array();
+        const DONT_EXIST = -1;
         this.repository.forEach(item => {
             if (
-                item.name.search(value) !== -1 ||
-                item.surname.search(value) !== -1 ||
-                item.number.search(value) !== -1
+                item.name.search(value) !== DONT_EXIST ||
+                item.surname.search(value) !== DONT_EXIST ||
+                item.number.search(value) !== DONT_EXIST
             ) {
                 result.push(item);
             }
@@ -125,17 +126,17 @@ class RenderToDoList {
             const $li = document.createElement('li');
             $li.dataset.id = item.id;
 
-            let $span = document.createElement('span');
+            const $span = document.createElement('span');
             $span.className = `text${$li.dataset.id}`;
             $span.innerHTML = item.text;
-            let $input = document.createElement('input');
+            const $input = document.createElement('input');
             $input.className = `check${$li.dataset.id}`;
             $input.setAttribute('type', 'checkbox');
             if (item.isDone === true) {
                 $input.setAttribute('checked', 'true');
             }
 
-            let $button = document.createElement('button');
+            const $button = document.createElement('button');
             $button.innerHTML = 'Remove notice';
             $button.className = `remove${$li.dataset.id}`;
             $li.innerHTML = $span.outerHTML + $input.outerHTML + $button.outerHTML;
@@ -148,6 +149,8 @@ class RenderToDoList {
     initializeRemovingNotice() {
         this.list.addEventListener('click', ({ target }) => {
             const li = target.closest('li');
+            const $input = document.querySelector('.todo__text');
+            const span = target.closest('span');
             switch (target.className) {
                 case `remove${li.dataset.id}`:
                     if (window.confirm('Do you really want to delete item?')) {
@@ -165,8 +168,6 @@ class RenderToDoList {
                     break;
 
                 case `text${li.dataset.id}`:
-                    const $input = document.querySelector('.todo__text');
-                    const span = target.closest('span');
                     $input.value = '';
                     $input.value = span.innerText.trim();
                     this.model.del(+li.getAttribute('data-id'));
@@ -225,12 +226,12 @@ class renderContactBook {
             const $li = document.createElement('li');
             $li.dataset.id = item.id;
 
-            let $span = document.createElement('span');
+            const $span = document.createElement('span');
             $span.className = `text${$li.dataset.id}`;
             $span.title = 'Click to edit';
             $span.innerHTML = `${item.name} ${item.surname} ${item.number}`;
 
-            let $button = document.createElement('button');
+            const $button = document.createElement('button');
             $button.className = `remove${$li.dataset.id}`;
             $button.innerHTML = 'Remove notice';
 
@@ -245,6 +246,9 @@ class renderContactBook {
     initializeRemovingNotice() {
         this.list.addEventListener('click', ({ target }) => {
             const li = target.closest('li');
+            const $nameInput = document.querySelector('.contact__name');
+            const $surnameInput = document.querySelector('.contact__surname');
+            const $numberInput = document.querySelector('.contact__number');
 
             switch (target.className) {
                 case `remove${li.dataset.id}`:
@@ -256,10 +260,6 @@ class renderContactBook {
                     break;
 
                 case `text${li.dataset.id}`:
-                    const $nameInput = document.querySelector('.contact__name');
-                    const $surnameInput = document.querySelector('.contact__surname');
-                    const $numberInput = document.querySelector('.contact__number');
-
                     this.model.repository.forEach(item => {
                         if (item.id === +li.dataset.id) {
                             $nameInput.value = item.name;
