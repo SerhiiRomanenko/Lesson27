@@ -77,7 +77,17 @@ class TodoList extends List {
 
 class ContactList extends List {
     searchContact(value) {
-        return this.repository.filter(item => Object.values(item).includes(value));
+        let result = new Array();
+        this.repository.forEach(item => {
+            if (
+                item.name.search(value) !== -1 ||
+                item.surname.search(value) !== -1 ||
+                item.number.search(value) !== -1
+            ) {
+                result.push(item);
+            }
+        });
+        return result;
     }
 }
 
@@ -114,16 +124,21 @@ class RenderToDoList {
         this.model.repository.forEach(item => {
             const $li = document.createElement('li');
             $li.dataset.id = item.id;
-            let checkedOrNot;
 
+            let $span = document.createElement('span');
+            $span.className = `text${$li.dataset.id}`;
+            $span.innerHTML = item.text;
+            let $input = document.createElement('input');
+            $input.className = `check${$li.dataset.id}`;
+            $input.setAttribute('type', 'checkbox');
             if (item.isDone === true) {
-                checkedOrNot = 'checked';
+                $input.setAttribute('checked', 'true');
             }
 
-            $li.innerHTML = `<span title='Click to edit'>
-            ${item.text}</span>
-            <input type="checkbox" ${checkedOrNot}>
-            <button>Remove notice</button>`;
+            let $button = document.createElement('button');
+            $button.innerHTML = 'Remove notice';
+            $button.className = `remove${$li.dataset.id}`;
+            $li.innerHTML = $span.outerHTML + $input.outerHTML + $button.outerHTML;
             fragment.appendChild($li);
         });
         this.list.innerHTML = '';
@@ -133,21 +148,23 @@ class RenderToDoList {
     initializeRemovingNotice() {
         this.list.addEventListener('click', ({ target }) => {
             const li = target.closest('li');
+            switch (target.className) {
+                case `remove${li.dataset.id}`:
+                    if (window.confirm('Do you really want to delete item?')) {
+                        this.model.del(+li.getAttribute('data-id'));
+                        this.initializeShowStatistic();
+                        this.initializeShowingList();
+                    }
 
-            switch (target.tagName) {
-                case 'BUTTON':
-                    this.model.del(+li.getAttribute('data-id'));
-                    this.initializeShowStatistic();
-                    this.initializeShowingList();
                     break;
 
-                case 'INPUT':
+                case `check${li.dataset.id}`:
                     this.model.setAsDoneNotice(+li.getAttribute('data-id'));
                     this.initializeShowStatistic();
                     this.initializeShowingList();
                     break;
 
-                case 'SPAN':
+                case `text${li.dataset.id}`:
                     const $input = document.querySelector('.todo__text');
                     const span = target.closest('span');
                     $input.value = '';
@@ -208,9 +225,17 @@ class renderContactBook {
             const $li = document.createElement('li');
             $li.dataset.id = item.id;
 
-            $li.innerHTML = `<span title='Click to edit'>
-            ${item.name} ${item.surname} ${item.number}</span>
-            <button>Remove notice</button>`;
+            let $span = document.createElement('span');
+            $span.className = `text${$li.dataset.id}`;
+            $span.title = 'Click to edit';
+            $span.innerHTML = `${item.name} ${item.surname} ${item.number}`;
+
+            let $button = document.createElement('button');
+            $button.className = `remove${$li.dataset.id}`;
+            $button.innerHTML = 'Remove notice';
+
+            $li.innerHTML = $span.outerHTML + $button.outerHTML;
+
             fragment.appendChild($li);
         });
         this.list.innerHTML = '';
@@ -221,22 +246,27 @@ class renderContactBook {
         this.list.addEventListener('click', ({ target }) => {
             const li = target.closest('li');
 
-            switch (target.tagName) {
-                case 'BUTTON':
-                    this.model.del(+li.getAttribute('data-id'));
-                    this.initializeShowingList();
+            switch (target.className) {
+                case `remove${li.dataset.id}`:
+                    if (window.confirm('Do you really want to delete item?')) {
+                        this.model.del(+li.getAttribute('data-id'));
+                        this.initializeShowingList();
+                    }
+
                     break;
 
-                case 'SPAN':
+                case `text${li.dataset.id}`:
                     const $nameInput = document.querySelector('.contact__name');
                     const $surnameInput = document.querySelector('.contact__surname');
                     const $numberInput = document.querySelector('.contact__number');
-                    const span = target.closest('span');
-                    const contactInfo = span.innerHTML.trim().split(' ');
 
-                    $nameInput.value = contactInfo[0];
-                    $surnameInput.value = contactInfo[1];
-                    $numberInput.value = contactInfo[2];
+                    this.model.repository.forEach(item => {
+                        if (item.id === +li.dataset.id) {
+                            $nameInput.value = item.name;
+                            $surnameInput.value = item.surname;
+                            $numberInput.value = item.number;
+                        }
+                    });
 
                     this.model.del(+li.getAttribute('data-id'));
             }
@@ -248,18 +278,23 @@ class renderContactBook {
             e.preventDefault();
 
             const $searchInput = document.querySelector('.contact__input');
+
             if ($searchInput.value.trim()) {
                 const filtredContacts = this.model.searchContact($searchInput.value);
-                console.log(filtredContacts);
 
                 const fragment = new DocumentFragment();
                 filtredContacts.forEach(item => {
                     const $li = document.createElement('li');
                     $li.dataset.id = item.id;
 
-                    $li.innerHTML = `<span title='Click to edit'>
-            ${item.name} ${item.surname} ${item.number}</span>
-            <button>Remove notice</button>`;
+                    const $span = document.createElement('span');
+                    $span.title = 'Click to edit';
+                    $span.innerHTML = `${item.name} ${item.surname} ${item.number}`;
+
+                    const $button = document.createElement('button');
+                    $button.innerHTML = 'Remove notice';
+
+                    $li.innerHTML = $span.outerHTML + $button.outerHTML;
                     fragment.appendChild($li);
                 });
                 this.list.innerHTML = '';

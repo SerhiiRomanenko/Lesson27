@@ -1,51 +1,62 @@
 body {
-  background-color: white;
-  text-align: center;
-  color: white;
-  font-family: 'Quicksand', sans-serif; }
+    background-color: white;
+    text-align: center;
+    color: white;
+    font-family: 'Quicksand', sans-serif;
+}
 
 div {
-  color: #4caf50; }
+    color: #4caf50;
+}
 
 h2 {
-  margin: 0 auto; }
+    margin: 0 auto;
+}
 
 ul {
-  color: black;
-  list-style: none; }
+    color: black;
+    list-style: none;
+}
 
 li {
-  width: 300px;
-  margin: 0 auto;
-  margin-bottom: 10px;
-  text-align: right; }
+    width: 300px;
+    margin: 0 auto;
+    margin-bottom: 10px;
+    text-align: right;
+}
 
 button {
-  background-color: #68c3a3;
-  border: 1px solid #217e4a;
-  color: white;
-  padding: 3px;
-  font-weight: 300;
-  -webkit-transition: 0.5s;
-  transition: 0.5s; }
-  button:hover {
+    background-color: #68c3a3;
+    border: 1px solid #217e4a;
+    color: white;
+    padding: 3px;
+    font-weight: 300;
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+}
+button:hover {
     background-color: #47b18c;
     cursor: pointer;
     color: #f5f246;
     background-color: #4caf50;
     /* Green */
-    color: white; }
+    color: white;
+}
 
 .contact__search {
-  margin-top: 20px;
-  display: inline-block; }
+    margin-top: 20px;
+    display: inline-block;
+}
 
 .title {
-  background-color: #68c3a3; }
+    background-color: #68c3a3;
+}
 
 .todo {
-  max-width: 600px;
-  margin: 0 auto; }
-  .todo__form {
+    max-width: 600px;
+    margin: 0 auto;
+}
+.todo__form {
     background-color: #be820a;
-    padding: 10px; }
+    padding: 10px;
+}
